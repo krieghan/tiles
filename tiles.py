@@ -1,13 +1,16 @@
 import optparse
 
-from tiles import canvas
+from tiles import tiles_world
+from game_common import canvas
 
 def run():
-    world = canvas.TilesWorld(height=100000,
-                               width=100000)
-    escape_canvas = canvas.TilesCanvas(world=world)
-    escape_canvas.start()
-
+    world = tiles_world.TilesWorld(
+                height_tiles=10,
+                width_tiles=10,
+                tile_height=100,
+                tile_width=100)
+    tiles_canvas = canvas.Canvas(world=world)
+    tiles_canvas.start()
 
 if __name__ == "__main__":
     run()
