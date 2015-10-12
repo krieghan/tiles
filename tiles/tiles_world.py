@@ -1,6 +1,7 @@
 import sys
 import time
 
+from OpenGL import GL
 import zope.interface 
 import zope.interface.verify
 
@@ -10,8 +11,8 @@ class TilesWorld(object):
 
     zope.interface.implements(interfaces.IWorld)
 
-    def __init__(self, 
-                 height_tiles, 
+    def __init__(self,
+                 height_tiles,
                  width_tiles,
                  tile_height,
                  tile_width):
@@ -31,17 +32,16 @@ class TilesWorld(object):
 
         self.current_time = 0
 
-        TileFactory = get_tile_factory(length_in=self.tile_height,
+        TileFactory = get_tile_factory(height_in=self.tile_height,
                                        width_in=self.tile_width)
 
         self.tiles = []
         for h in range(height_tiles):
             self.tiles.append([])
             for w in range(width_tiles):
-                tile = TileFactory()
+                tile = TileFactory(h, w)
                 self.canvasElements.append(tile)
                 self.tiles[h].append(tile)
-                
 
     def update(self,
                currentTime):
@@ -63,31 +63,48 @@ class TilesWorld(object):
 
 zope.interface.verify.verifyClass(interfaces.IWorld, TilesWorld)
 
-
-def get_tile_factory(length_in, width_in):
+def get_tile_factory(height_in, width_in):
     class Tile(object):
         zope.interface.implements(interfaces.Renderable)
 
-        length = length_in
+        height = height_in
         width = width_in
 
-        def __init__(self):
+        def __init__(self, h_index, w_index):
             self.active = True
-
+            self.position = ((w_index + .5) * self.width,
+                             (h_index + .5) * self.height)
+            
         def getWidth(self):
             return self.width
 
         def getLength(self):
-            return self.length
+            return self.height
 
         def getPosition(self):
-            return None
+            return self.position
 
         def update(self, timeElapsed):
             pass
 
         def draw(self):
-            pass
+            x, y = self.getPosition()
+            half_width = .5 * self.width
+            half_height = .5 * self.height
+            color = (1, 1, 1)
+
+            GL.glPushMatrix()
+            GL.glTranslate(x, y, 0)
+            GL.glColor3f(*color)
+            GL.glBegin(GL.GL_LINE_LOOP)
+
+            GL.glVertex2f(-half_width, half_height)
+            GL.glVertex2f(half_width, half_height)
+            GL.glVertex2f(half_width, -half_height)
+            GL.glVertex2f(-half_width, -half_height)
+
+            GL.glEnd()
+            GL.glPopMatrix()
 
     zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
     return Tile
