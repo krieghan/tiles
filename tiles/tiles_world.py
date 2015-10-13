@@ -52,21 +52,21 @@ class TilesWorld(object):
                 tile=self.tiles[4][5])
                 
         self.canvasElements.append(self.player)
+        self.mode = None
 
+    def start(self):
         GLUT.glutIgnoreKeyRepeat(True)
         GLUT.glutSpecialFunc(self.special_keyboard_down)
         GLUT.glutSpecialUpFunc(self.special_keyboard_up)
 
-        self.mode = None
-
-    def special_keyboard_up(key, mouse_x, mouse_y):
+    def special_keyboard_down(self, key, mouse_x, mouse_y):
         if key in (GLUT.GLUT_KEY_UP, 
                    GLUT.GLUT_KEY_DOWN,
                    GLUT.GLUT_KEY_LEFT,
                    GLUT.GLUT_KEY_RIGHT):
             self.mode = key
 
-    def special_keyboard_down(key, mouse_x, mouse_y):
+    def special_keyboard_up(self, key, mouse_x, mouse_y):
         if key in (GLUT.GLUT_KEY_UP, 
                    GLUT.GLUT_KEY_DOWN,
                    GLUT.GLUT_KEY_LEFT,
@@ -141,8 +141,8 @@ def get_tile_factory(height_in, width_in):
             GL.glPopMatrix()
 
         def getAdjacentTile(self, direction):
-            new_x = x
-            new_y = y
+            new_x = self.x
+            new_y = self.y
             if direction == GLUT.GLUT_KEY_UP:
                 new_y += 1
             elif direction == GLUT.GLUT_KEY_DOWN:

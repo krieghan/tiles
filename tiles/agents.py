@@ -4,17 +4,23 @@ import zope.interface.verify
 from game_common import (
         interfaces,
         statemachine)
+from game_common.twodee.geometry import (
+        calculate,
+        vector)
 
 from tiles import states
 
 class Player(object):
-    zope.interface.implements(interfaces.Steerable)
+    zope.interface.implements(
+            [interfaces.Moveable,
+             interfaces.Observable])
 
     def __init__(self, 
                  world=None,
                  renderer=None,
                  height=10,
                  width=10,
+                 single_speed=5,
                  tile=None):
         self.renderer = renderer
         self.height = height
@@ -22,6 +28,7 @@ class Player(object):
         self.active = True
         self.tile = tile
         self.next_tile = None
+        self.single_speed = single_speed
         self.world = world
         if tile:
             self.position = tile.getPosition()
@@ -34,16 +41,12 @@ class Player(object):
                 globalState=None,
                 name='tileMovement')
 
-        self.steeringController = steeringcontroller.SteeringController(
-                owner=self)
+        self.state_machines = [self.state_machine]
 
         self.velocity = (0, 0)
         self.direction = None
 
-    def draw(self):
-        if self.renderer:
-            self.renderer(self)
-
+    #Renderable
     def getPosition(self):
         return self.position
     
@@ -54,33 +57,41 @@ class Player(object):
         return self.width
 
     def update(self, timeElapsed):
-        pass
+        for machine in self.state_machines:
+            machine.update()
 
+        self.position = calculate.addPointAndVector(
+                self.position,
+                self.velocity)
+
+    def draw(self):
+        if self.renderer:
+            self.renderer(self)
+
+    #Moveable
     def getVelocity(self):
         return self.velocity
     
     def getSpeed(self):
-        return 0
-    
+        return vector.getMagnitude(self.velocity)
+
     def getHeading(self):
-        pass
+        return vector.normalize(self.velocity)
 
     def getDirectionDegrees(self):
-        pass
+        return vector.getDirectionDegrees(self.velocity)
     
     def getDirection(self):
-        pass
+        return vector.getDirectionRadians(self.velocity)
 
-    def getMaxSpeed(self):
-        pass
-    
-    def getMaxForce(self):
-        pass
-    
-    def getObstacleDetectionDimensions(self):
-        pass
-    
-    def getSteeringController(self):
-        pass
+    #Observable
+    def getObservers(self):
+        return []
 
-zope.interface.verify.verifyClass(interfaces.Steerable, Agent)
+    #Moveable with binary speed (stopped or going)
+    def setVelocityFromDirection(self, direction):
+        self.velocity = vector.setMagnitude(direction, self.single_speed)
+
+
+zope.interface.verify.verifyClass(interfaces.Moveable, Player)
+zope.interface.verify.verifyClass(interfaces.Observable, Player)
