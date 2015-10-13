@@ -1,11 +1,12 @@
 import sys
 import time
 
-from OpenGL import GL
+from OpenGL import GL, GLUT
 import zope.interface 
 import zope.interface.verify
 
 from game_common import interfaces
+from tiles import agents, renderers
 
 class TilesWorld(object):
 
@@ -39,9 +40,39 @@ class TilesWorld(object):
         for h in range(height_tiles):
             self.tiles.append([])
             for w in range(width_tiles):
-                tile = TileFactory(h, w)
+                tile = TileFactory(self.tiles, h, w)
                 self.canvasElements.append(tile)
                 self.tiles[h].append(tile)
+
+        self.player = agents.Player(
+                world=self,
+                renderer=renderers.render_player,
+                height=80,
+                width=80,
+                tile=self.tiles[4][5])
+                
+        self.canvasElements.append(self.player)
+
+        GLUT.glutIgnoreKeyRepeat(True)
+        GLUT.glutSpecialFunc(self.special_keyboard_down)
+        GLUT.glutSpecialUpFunc(self.special_keyboard_up)
+
+        self.mode = None
+
+    def special_keyboard_up(key, mouse_x, mouse_y):
+        if key in (GLUT.GLUT_KEY_UP, 
+                   GLUT.GLUT_KEY_DOWN,
+                   GLUT.GLUT_KEY_LEFT,
+                   GLUT.GLUT_KEY_RIGHT):
+            self.mode = key
+
+    def special_keyboard_down(key, mouse_x, mouse_y):
+        if key in (GLUT.GLUT_KEY_UP, 
+                   GLUT.GLUT_KEY_DOWN,
+                   GLUT.GLUT_KEY_LEFT,
+                   GLUT.GLUT_KEY_RIGHT):
+            if key == self.mode:
+                self.mode = None
 
     def update(self,
                currentTime):
@@ -70,8 +101,11 @@ def get_tile_factory(height_in, width_in):
         height = height_in
         width = width_in
 
-        def __init__(self, h_index, w_index):
+        def __init__(self, grid, h_index, w_index):
             self.active = True
+            self.grid = grid
+            self.x = h_index
+            self.y = w_index
             self.position = ((w_index + .5) * self.width,
                              (h_index + .5) * self.height)
             
@@ -105,6 +139,22 @@ def get_tile_factory(height_in, width_in):
 
             GL.glEnd()
             GL.glPopMatrix()
+
+        def getAdjacentTile(self, direction):
+            new_x = x
+            new_y = y
+            if direction == GLUT.GLUT_KEY_UP:
+                new_y += 1
+            elif direction == GLUT.GLUT_KEY_DOWN:
+                new_y -= 1
+            elif direction == GLUT.GLUT_KEY_LEFT:
+                new_x -= 1
+            elif direction == GLUT.GLUT_KEY_RIGHT:
+                new_x += 1
+
+            return self.grid[new_x][new_y]
+
+        
 
     zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
     return Tile
