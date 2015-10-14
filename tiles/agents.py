@@ -92,6 +92,9 @@ class Player(object):
     def setVelocityFromDirection(self, direction):
         self.velocity = vector.setMagnitude(direction, self.single_speed)
 
+    def setSpeed(self, speed):
+        self.velocity = vector.setMagnitude(self.velocity, speed)
+
 
 zope.interface.verify.verifyClass(interfaces.Moveable, Player)
 zope.interface.verify.verifyClass(interfaces.Observable, Player)

@@ -10,7 +10,7 @@ class OnTile(object):
 
     @classmethod
     def enter(cls, owner):
-        owner.setVelocityFromDirection((0, 0))
+        owner.setSpeed(0)
 
     @classmethod
     def execute(cls, owner):

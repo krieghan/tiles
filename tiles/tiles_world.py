@@ -37,12 +37,12 @@ class TilesWorld(object):
                                        width_in=self.tile_width)
 
         self.tiles = []
-        for h in range(height_tiles):
+        for w in range(width_tiles):
             self.tiles.append([])
-            for w in range(width_tiles):
-                tile = TileFactory(self.tiles, h, w)
+            for h in range(height_tiles):
+                tile = TileFactory(self.tiles, w, h)
                 self.canvasElements.append(tile)
-                self.tiles[h].append(tile)
+                self.tiles[w].append(tile)
 
         self.player = agents.Player(
                 world=self,
@@ -101,11 +101,11 @@ def get_tile_factory(height_in, width_in):
         height = height_in
         width = width_in
 
-        def __init__(self, grid, h_index, w_index):
+        def __init__(self, grid, w_index, h_index):
             self.active = True
             self.grid = grid
-            self.x = h_index
-            self.y = w_index
+            self.x = w_index
+            self.y = h_index
             self.position = ((w_index + .5) * self.width,
                              (h_index + .5) * self.height)
             
@@ -143,14 +143,8 @@ def get_tile_factory(height_in, width_in):
         def getAdjacentTile(self, direction):
             new_x = self.x
             new_y = self.y
-            if direction == GLUT.GLUT_KEY_UP:
-                new_y += 1
-            elif direction == GLUT.GLUT_KEY_DOWN:
-                new_y -= 1
-            elif direction == GLUT.GLUT_KEY_LEFT:
-                new_x -= 1
-            elif direction == GLUT.GLUT_KEY_RIGHT:
-                new_x += 1
+            new_x = int(new_x + direction[0])
+            new_y = int(new_y + direction[1])
 
             return self.grid[new_x][new_y]
 
