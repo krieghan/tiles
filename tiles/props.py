@@ -2,9 +2,12 @@ import zope.interface
 import zope.interface.verify
 
 from game_common import interfaces
+import tiles
 
 class Obstacle(object):
-    zope.interface.implements(interfaces.Renderable)
+    zope.interface.implements(
+            [tiles.TileInhabitant,
+             interfaces.Renderable])
 
     def __init__(self,
                  world,
@@ -18,6 +21,7 @@ class Obstacle(object):
         self.width = width * tile.width
         self.tile = tile
         self.position = tile.getPosition()
+        self.tile.add_member(self)
 
     def getPosition(self):
         return self.position
@@ -37,5 +41,16 @@ class Obstacle(object):
     def getActive(self):
         return True
 
+    #TileInhabitant
+    def change_tile(self, new_tile):
+        pass
+
+    def get_current_tile(self):
+        return self.tile
+
+    def is_obstructive(self):
+        return True
+
 zope.interface.verify.verifyClass(interfaces.Renderable, Obstacle)
+zope.interface.verify.verifyClass(tiles.TileInhabitant, Obstacle)
 

@@ -19,7 +19,12 @@ class OnTile(object):
 
     @classmethod
     def exit(cls, owner):
-        pass
+        if owner.world.mode:
+            current_tile = owner.tile
+            direction = constants.get_direction_from_gl_cursor(owner.world.mode)
+            next_tile = current_tile.getAdjacentTile(direction)
+            if next_tile.is_obstructed():
+                raise statemachine.StateChangeFailed()
 
 zope.interface.verify.verifyClass(statemachine.IState, OnTile)
 
@@ -56,8 +61,7 @@ class BetweenTiles(object):
 
     @classmethod
     def exit(cls, owner):
-        owner.tile = owner.next_tile
-        owner.next_tile = None
+        owner.change_tile(owner.next_tile)
 
 zope.interface.verify.verifyClass(statemachine.IState, BetweenTiles)
 

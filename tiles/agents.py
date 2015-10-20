@@ -8,12 +8,14 @@ from game_common.twodee.geometry import (
         calculate,
         vector)
 
+import tiles
 from tiles import states
 
 class Player(object):
     zope.interface.implements(
             [interfaces.Moveable,
-             interfaces.Observable])
+             interfaces.Observable,
+             tiles.TileInhabitant])
 
     def __init__(self, 
                  world=None,
@@ -29,6 +31,8 @@ class Player(object):
         self.next_tile = None
         self.single_speed = single_speed
         self.world = world
+        self.tile = tile
+        self.tile.add_member(self)
         if tile:
             self.position = tile.getPosition()
         else:
@@ -97,6 +101,19 @@ class Player(object):
     def setSpeed(self, speed):
         self.velocity = vector.setMagnitude(self.velocity, speed)
 
+    #TileInhabitant
+    def change_tile(self, new_tile):
+        self.tile.remove_member(self)
+        self.tile = new_tile
+        self.tile.add_member(self)
+        self.next_tile = None
+
+    def get_current_tile(self):
+        return self.tile
+
+    def is_obstructive(self):
+        return False
 
 zope.interface.verify.verifyClass(interfaces.Moveable, Player)
 zope.interface.verify.verifyClass(interfaces.Observable, Player)
+zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
