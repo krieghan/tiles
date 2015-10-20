@@ -18,14 +18,13 @@ class Player(object):
     def __init__(self, 
                  world=None,
                  renderer=None,
-                 height=10,
-                 width=10,
+                 height=1,
+                 width=1,
                  single_speed=5,
                  tile=None):
         self.renderer = renderer
-        self.height = height
-        self.width = width
-        self.active = True
+        self.height = height * tile.height
+        self.width = width * tile.width
         self.tile = tile
         self.next_tile = None
         self.single_speed = single_speed
@@ -47,6 +46,9 @@ class Player(object):
         self.direction = None
 
     #Renderable
+    def getActive(self):
+        return True
+
     def getPosition(self):
         return self.position
     

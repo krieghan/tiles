@@ -6,7 +6,7 @@ import zope.interface
 import zope.interface.verify
 
 from game_common import interfaces
-from tiles import agents, renderers
+from tiles import agents, renderers, props
 
 class TilesWorld(object):
 
@@ -47,11 +47,19 @@ class TilesWorld(object):
         self.player = agents.Player(
                 world=self,
                 renderer=renderers.render_player,
-                height=80,
-                width=80,
+                height=.8,
+                width=.8,
                 tile=self.tiles[4][5])
+
+        obstacle = props.Obstacle(
+                world=self,
+                renderer=renderers.render_obstacle,
+                height=1,
+                width=1,
+                tile=self.tiles[3][3])
                 
         self.canvasElements.append(self.player)
+        self.canvasElements.append(obstacle)
         self.mode = None
 
     def start(self):
@@ -81,7 +89,7 @@ class TilesWorld(object):
         timeElapsed = (currentTime - self.current_time)
         self.current_time = currentTime
         for canvasElement in self.getAllCanvasElements():
-            if not canvasElement.active:
+            if not canvasElement.getActive():
                 continue
             canvasElement.update(timeElapsed=timeElapsed)
 
@@ -102,13 +110,15 @@ def get_tile_factory(height_in, width_in):
         width = width_in
 
         def __init__(self, grid, w_index, h_index):
-            self.active = True
             self.grid = grid
             self.x = w_index
             self.y = h_index
             self.position = ((w_index + .5) * self.width,
                              (h_index + .5) * self.height)
             
+        def getActive(self):
+            return True
+
         def getWidth(self):
             return self.width
 

@@ -22,3 +22,21 @@ def render_player(agent):
     GL.glColor3f(*color)
     draw_circle(agent.getLength() / 2.0, 20)
     GL.glPopMatrix()
+
+def render_obstacle(obstacle):
+    x, y = obstacle.getPosition()
+    half_width = .5 * obstacle.getWidth()
+    half_height = .5 * obstacle.getLength()
+    color = (.5, .5, .5)
+    GL.glPushMatrix()
+    GL.glTranslate(x, y, 0)
+    GL.glColor3f(*color)
+    GL.glBegin(GL.GL_POLYGON)
+
+    GL.glVertex2f(-half_width, half_height)
+    GL.glVertex2f((half_width - 1), half_height)
+    GL.glVertex2f((half_width - 1), (-half_height + 1))
+    GL.glVertex2f(-half_width, (-half_height + 1))
+
+    GL.glEnd()
+    GL.glPopMatrix()
