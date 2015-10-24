@@ -81,12 +81,20 @@ def get_tile_factory(height_in, width_in):
     return Tile
 
 class TileInhabitant(zope.interface.Interface):
-    def change_tile(new_tile):
-        pass
-
     def get_current_tile():
         pass
 
     def is_obstructive():
         pass
+
+class TileAgent(TileInhabitant):
+    def change_tile(new_tile):
+        pass
+
+    def set_next_tile():
+        pass
+
+    def get_next_tile():
+        pass
+
 

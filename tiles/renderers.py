@@ -23,6 +23,15 @@ def render_player(agent):
     draw_circle(agent.getLength() / 2.0, 20)
     GL.glPopMatrix()
 
+def render_enemy(agent):
+    x, y = agent.getPosition()
+    color = (1, 0, 0)
+    GL.glPushMatrix()
+    GL.glTranslate(x, y, 0)
+    GL.glColor3f(*color)
+    draw_circle(agent.getLength() / 2.0, 20)
+    GL.glPopMatrix()
+
 def render_obstacle(obstacle):
     x, y = obstacle.getPosition()
     half_width = .5 * obstacle.getWidth()

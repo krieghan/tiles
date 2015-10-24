@@ -42,9 +42,6 @@ class Obstacle(object):
         return True
 
     #TileInhabitant
-    def change_tile(self, new_tile):
-        pass
-
     def get_current_tile(self):
         return self.tile
 

@@ -62,9 +62,18 @@ class TilesWorld(object):
                 height=1,
                 width=1,
                 tile=self.tiles[3][3])
+
+        enemy = agents.Enemy(
+                world=self,
+                renderer=renderers.render_enemy,
+                height=.8,
+                width=.8,
+                tile=self.tiles[0][0])
+        enemy.getSteeringController().activate('pursue', self.player)
                 
         self.canvasElements.append(self.player)
         self.canvasElements.append(obstacle)
+        self.canvasElements.append(enemy)
         self.mode = None
 
     def start(self):
