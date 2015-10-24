@@ -11,25 +11,18 @@ from game_common.twodee.geometry import (
 import tiles
 from tiles import states
 
-class Player(object):
-    zope.interface.implements(
-            [interfaces.Moveable,
-             interfaces.Observable,
-             tiles.TileInhabitant])
-
+class MovingAgent(object):
     def __init__(self, 
-                 world=None,
-                 renderer=None,
+                 world,
+                 renderer,
                  height=1,
                  width=1,
-                 single_speed=5,
                  tile=None):
         self.renderer = renderer
         self.height = height * tile.height
         self.width = width * tile.width
         self.tile = tile
         self.next_tile = None
-        self.single_speed = single_speed
         self.world = world
         self.tile = tile
         self.tile.add_member(self)
@@ -62,14 +55,6 @@ class Player(object):
     def getWidth(self):
         return self.width
 
-    def update(self, timeElapsed):
-        for machine in self.state_machines:
-            machine.update()
-
-        self.position = calculate.addPointAndVector(
-                self.position,
-                self.velocity)
-
     def draw(self):
         if self.renderer:
             self.renderer(self)
@@ -90,16 +75,20 @@ class Player(object):
     def getDirection(self):
         return vector.getDirectionRadians(self.velocity)
 
+    def update(self, timeElapsed):
+        for machine in self.get_state_machines():
+            machine.update()
+
+        self.position = calculate.addPointAndVector(
+                self.position,
+                self.velocity)
+
     #Observable
     def getObservers(self):
         return []
 
-    #Moveable with binary speed (stopped or going)
-    def setVelocityFromDirection(self, direction):
-        self.velocity = vector.setMagnitude(direction, self.single_speed)
-
-    def setSpeed(self, speed):
-        self.velocity = vector.setMagnitude(self.velocity, speed)
+    def get_state_machines(self):
+        return self.state_machines
 
     #TileInhabitant
     def change_tile(self, new_tile):
@@ -114,6 +103,71 @@ class Player(object):
     def is_obstructive(self):
         return False
 
+
+class Enemy(MovingAgent):
+    zope.interface.implements(
+            [interfaces.Steerable,
+             interfaces.Observable,
+             tiles.TileInhabitant])
+
+    def __init__(self,
+                 world,
+                 renderer,
+                 height=1,
+                 width=1,
+                 tile=None):
+        super(Enemy, self).__init__(
+                world=world,
+                renderer=renderer,
+                height=height,
+                width=width,
+                tile=tile)
+
+    def getMaxSpeed(self):
+        return 10
+
+    def getMaxForce(self):
+        return 100
+
+    def getObstacleDetectionDimensions(self):
+        return None
+
+    def getSteeringController(self):
+        return None
+
+class Player(MovingAgent):
+    zope.interface.implements(
+            [interfaces.Moveable,
+             interfaces.Observable,
+             tiles.TileInhabitant])
+
+    def __init__(self, 
+                 world,
+                 renderer,
+                 height=1,
+                 width=1,
+                 single_speed=5,
+                 tile=None):
+        super(Player, self).__init__(
+                world=world,
+                renderer=renderer,
+                height=height,
+                width=width,
+                tile=tile)
+        self.single_speed = single_speed
+
+    #Moveable with binary speed (stopped or going)
+    def setVelocityFromDirection(self, direction):
+        self.velocity = vector.setMagnitude(direction, self.single_speed)
+
+    def setSpeed(self, speed):
+        self.velocity = vector.setMagnitude(self.velocity, speed)
+
+
 zope.interface.verify.verifyClass(interfaces.Moveable, Player)
 zope.interface.verify.verifyClass(interfaces.Observable, Player)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
+
+zope.interface.verify.verifyClass(interfaces.Steerable, Enemy)
+zope.interface.verify.verifyClass(interfaces.Observable, Enemy)
+zope.interface.verify.verifyClass(tiles.TileInhabitant, Enemy)
