@@ -2,11 +2,17 @@ from OpenGL import GL
 import zope.interface
 import zope.interface.verify
 
-from game_common import interfaces
+from game_common import (
+        interfaces,
+        graph)
+
+from tiles import constants
 
 def get_tile_factory(height_in, width_in):
     class Tile(object):
-        zope.interface.implements(interfaces.Renderable)
+        zope.interface.implements([
+            interfaces.Renderable,
+            graph.NodeData])
 
         height = height_in
         width = width_in
@@ -19,7 +25,14 @@ def get_tile_factory(height_in, width_in):
                              (h_index + .5) * self.height)
 
             self.members = set()
+            self.node = None
             
+        def set_graph_node(self, node):
+            self.node = node
+
+        def get_graph_node(self):
+            return self.node
+
         def add_member(self, member):
             self.members.add(member)
 
@@ -66,7 +79,18 @@ def get_tile_factory(height_in, width_in):
             new_x = int(new_x + direction[0])
             new_y = int(new_y + direction[1])
 
-            return self.grid[new_x][new_y]
+            try:
+                return self.grid[new_x][new_y]
+            except IndexError:
+                return None
+
+        def getAllAdjacentTiles(self):
+            tiles = []
+            for direction in constants.directions:
+                tile = self.getAdjacentTile(direction)
+                if tile is not None:
+                    tiles.append(tile)
+            return tiles
 
         def is_obstructed(self):
             for member in self.members:
@@ -75,7 +99,8 @@ def get_tile_factory(height_in, width_in):
                 
             return False
 
-        
+        def is_traversable(self):
+            return not self.is_obstructed()
 
     zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
     return Tile

@@ -5,7 +5,9 @@ from OpenGL import GL, GLUT
 import zope.interface 
 import zope.interface.verify
 
-from game_common import interfaces
+from game_common import (
+        graph,
+        interfaces)
 import tiles
 from tiles import (
         agents, 
@@ -46,6 +48,12 @@ class TilesWorld(object):
             self.tiles.append([])
             for h in range(height_tiles):
                 tile = TileFactory(self.tiles, w, h)
+                tile_node = graph.Node(data=tile)
+                tile.set_graph_node(tile_node)
+                adjacent_tiles = tile.getAllAdjacentTiles()
+                for adjacent_tile in adjacent_tiles:
+                    tile_node.add_two_way_connected_node(adjacent_tile.get_graph_node())
+
                 self.canvasElements.append(tile)
                 self.tiles[w].append(tile)
 
@@ -69,6 +77,9 @@ class TilesWorld(object):
                 height=.8,
                 width=.8,
                 tile=self.tiles[0][0])
+
+        
+
         enemy.getSteeringController().activate('pursue', self.player)
                 
         self.canvasElements.append(self.player)
