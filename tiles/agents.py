@@ -143,7 +143,9 @@ class Enemy(MovingAgent):
                 globalState=None,
                 name='tileMovement')
         self.state_machines.append(self.state_machine)
-
+        self.target = None
+        self.path = None
+    
     def getMaxSpeed(self):
         return 10
 
@@ -155,6 +157,26 @@ class Enemy(MovingAgent):
 
     def getSteeringController(self):
         return self.steering_controller
+
+    def getTarget(self):
+        return self.target
+
+    def setTarget(self, target):
+        self.target = target
+        self.updatePath()
+
+    def get_path(self):
+        return self.path
+
+    def update_path(self):
+        if (self.path is None or 
+            self.path[-1] is not self.target.get_current_tile()):
+            current_node = self.get_current_tile().get_graph_node()
+            target_node = self.target.get_current_tile().get_graph_node()
+            path_of_nodes = graph.get_path_to_target(
+                    current_node,
+                    target_node)
+            self.path = [node.get_data() for node in path_of_nodes]
 
 
 class Player(MovingAgent):

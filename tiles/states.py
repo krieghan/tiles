@@ -29,6 +29,13 @@ class AgentBetweenTiles(object):
 
     @classmethod
     def enter(cls, owner):
+        owner.update_path()
+        path = owner.get_path()
+        next_tile = owner.get_current_tile()
+
+        while next_tile is owner.get_current_tile():
+            next_tile = path.pop(0)
+
         # Not bothering with calculating acceleration, here.
         # Velocity is the force vector at the magnitude of the 
         # owner's maximum speed
