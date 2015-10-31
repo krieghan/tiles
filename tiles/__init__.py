@@ -33,6 +33,9 @@ def get_tile_factory(height_in, width_in):
         def get_graph_node(self):
             return self.node
 
+        def get_grid_position(self):
+            return (self.x, self.y)
+
         def add_member(self, member):
             self.members.add(member)
 
@@ -102,7 +105,14 @@ def get_tile_factory(height_in, width_in):
         def is_traversable(self):
             return not self.is_obstructed()
 
+        def calculate_heuristic_cost(self, target_tile):
+            my_x, my_y = self.get_grid_position()
+            target_x, target_y = target_tile.get_grid_position()
+            return abs(my_x - target_x) + abs(my_y - target_y)
+
+
     zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
+    zope.interface.verify.verifyClass(graph.NodeData, Tile)
     return Tile
 
 class TileInhabitant(zope.interface.Interface):

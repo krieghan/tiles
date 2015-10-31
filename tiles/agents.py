@@ -3,7 +3,8 @@ import zope.interface.verify
 
 from game_common import (
         interfaces,
-        statemachine)
+        statemachine,
+        graph)
 from game_common.twodee.geometry import (
         calculate,
         vector)
@@ -144,7 +145,7 @@ class Enemy(MovingAgent):
                 name='tileMovement')
         self.state_machines.append(self.state_machine)
         self.target = None
-        self.path = None
+        self.path = []
     
     def getMaxSpeed(self):
         return 10
@@ -158,18 +159,22 @@ class Enemy(MovingAgent):
     def getSteeringController(self):
         return self.steering_controller
 
-    def getTarget(self):
+    def get_target(self):
         return self.target
 
-    def setTarget(self, target):
+    def set_target(self, target):
         self.target = target
-        self.updatePath()
+        self.update_path()
 
     def get_path(self):
         return self.path
 
     def update_path(self):
+        if not self.target:
+            return
+
         if (self.path is None or 
+            self.path == [] or
             self.path[-1] is not self.target.get_current_tile()):
             current_node = self.get_current_tile().get_graph_node()
             target_node = self.target.get_current_tile().get_graph_node()

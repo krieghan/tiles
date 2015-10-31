@@ -78,6 +78,8 @@ class TilesWorld(object):
                 width=.8,
                 tile=self.tiles[0][0])
 
+        enemy.set_target(self.player)
+
         
 
         enemy.getSteeringController().activate('pursue', self.player)

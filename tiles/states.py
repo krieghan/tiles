@@ -5,7 +5,9 @@ from game_common import (
         constants,
         statemachine)
 
-from game_common.twodee.geometry import vector
+from game_common.twodee.geometry import (
+        vector,
+        calculate)
 
 class AgentOnTile(object):
     zope.interface.implements(statemachine.IState)
@@ -34,27 +36,26 @@ class AgentBetweenTiles(object):
         next_tile = owner.get_current_tile()
 
         while next_tile is owner.get_current_tile():
+            if len(path) == 0:
+                raise statemachine.StateChangeFailed()
             next_tile = path.pop(0)
 
-        # Not bothering with calculating acceleration, here.
-        # Velocity is the force vector at the magnitude of the 
-        # owner's maximum speed
-        force_vector = owner.steering_controller.calculate()
-        
-        # Pick the cardinal direction that's closest to the 
-        # force vector
-        cardinal_force = vector.pick_closest_vector(
-                force_vector,
-                [(0, 1), (0, -1), (-1, 0), (1, 0)])
-
-        current_tile = owner.get_current_tile()
-        next_tile = current_tile.getAdjacentTile(cardinal_force)
         if next_tile.is_obstructed():
             raise statemachine.StateChangeFailed()
 
+        owner_to_tile = calculate.subtractPoints(
+                next_tile.getPosition(),
+                owner.getPosition())
+
+        # Pick the cardinal direction that's closest to the 
+        # force vector
+        cardinal_velocity = vector.pick_closest_vector(
+                owner_to_tile,
+                [(0, 1), (0, -1), (-1, 0), (1, 0)])
+
         owner.set_next_tile(next_tile)
         owner.setVelocity(
-                vector.setMagnitude(cardinal_force, owner.single_speed))
+                vector.setMagnitude(cardinal_velocity, owner.single_speed))
 
     @classmethod
     def execute(cls, owner):
