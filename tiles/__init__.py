@@ -25,6 +25,7 @@ def get_tile_factory(height_in, width_in):
                              (h_index + .5) * self.height)
 
             self.members = set()
+            self.aspiring_members = set()
             self.node = None
             
         def set_graph_node(self, node):
@@ -41,6 +42,12 @@ def get_tile_factory(height_in, width_in):
 
         def remove_member(self, member):
             self.members.remove(member)
+
+        def add_aspiring_member(self, member):
+            self.aspiring_members.add(member)
+
+        def remove_aspiring_member(self, member):
+            self.aspiring_members.remove(member)
 
         def getActive(self):
             return True
@@ -99,7 +106,7 @@ def get_tile_factory(height_in, width_in):
             return tiles
 
         def is_obstructed(self):
-            for member in self.members:
+            for member in self.members.union(self.aspiring_members):
                 if member.is_obstructive():
                     return True
                 

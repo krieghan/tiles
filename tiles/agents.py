@@ -94,13 +94,18 @@ class MovingAgent(object):
         self.tile.remove_member(self)
         self.tile = new_tile
         self.tile.add_member(self)
-        self.next_tile = None
+        self.set_next_tile(None)
 
     def get_current_tile(self):
         return self.tile
 
     def set_next_tile(self, next_tile):
+        if self.next_tile:
+            self.next_tile.remove_aspiring_member(self)
+
         self.next_tile = next_tile
+        if next_tile is not None:
+            next_tile.add_aspiring_member(self)
 
     def get_next_tile(self):
         return self.next_tile

@@ -55,7 +55,9 @@ class AgentBetweenTiles(object):
 
         owner.set_next_tile(next_tile)
         owner.setVelocity(
-                vector.setMagnitude(cardinal_velocity, owner.single_speed))
+                vector.setMagnitude(
+                    cardinal_velocity, 
+                    owner.single_speed))
 
     @classmethod
     def execute(cls, owner):
@@ -118,7 +120,7 @@ class BetweenTiles(object):
             owner.setVelocityFromDirection(
                 constants.get_direction_from_gl_cursor(owner.world.mode))
             next_tile = currentTile.getAdjacentTile(owner.getHeading())
-            owner.next_tile = next_tile
+            owner.set_next_tile(next_tile)
 
     @classmethod
     def execute(cls, owner):
