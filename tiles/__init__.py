@@ -82,6 +82,9 @@ def get_tile_factory(height_in, width_in):
             new_x = int(new_x + direction[0])
             new_y = int(new_y + direction[1])
 
+            if new_x < 0 or new_y < 0:
+                return None
+
             try:
                 return self.grid[new_x][new_y]
             except IndexError:

@@ -101,6 +101,8 @@ class OnTile(object):
             current_tile = owner.get_current_tile()
             direction = constants.get_direction_from_gl_cursor(owner.world.mode)
             next_tile = current_tile.getAdjacentTile(direction)
+            if next_tile is None:
+                raise statemachine.StateChangeFailed()
             if next_tile.is_obstructed():
                 raise statemachine.StateChangeFailed()
 
