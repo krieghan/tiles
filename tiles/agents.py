@@ -11,7 +11,7 @@ from game_common.twodee.geometry import (
 from game_common.twodee.steering import steeringcontroller
 
 import tiles
-from tiles import states
+from tiles import states, renderers
 
 class MovingAgent(object):
     def __init__(self, 
@@ -120,6 +120,37 @@ class MovingAgent(object):
     def setSpeed(self, speed):
         self.velocity = vector.setMagnitude(self.velocity, speed)
 
+class Shot(MovingAgent):
+    zope.interface.implements(
+            [interfaces.Moveable,
+             interfaces.Observable,
+             tiles.TileAgent])
+
+    def __init__(self,
+                 world,
+                 direction,
+                 renderer=renderers.render_shot,
+                 height=0,
+                 width=0,
+                 single_speed=10,
+                 tile=None):
+        super(Shot, self).__init__(
+                world=world,
+                renderer=renderer,
+                height=height,
+                width=width,
+                tile=tile)
+        self.single_speed = single_speed
+        self.velocity = vector.setMagnitude(
+                direction,
+                self.single_speed)
+
+    def is_obstructive(self):
+        return False
+
+    def update(self, timeElapsed):
+        super(Shot, self).update(timeElapsed)
+
 class Enemy(MovingAgent):
     zope.interface.implements(
             [interfaces.Steerable,
@@ -131,7 +162,7 @@ class Enemy(MovingAgent):
                  renderer,
                  height=1,
                  width=1,
-                 single_speed=5,
+                 single_speed=4,
                  tile=None):
         super(Enemy, self).__init__(
                 world=world,
@@ -141,7 +172,7 @@ class Enemy(MovingAgent):
                 tile=tile)
         self.steering_controller = steeringcontroller.SteeringController(
                 agent=self)
-        self.single_speed = 4
+        self.single_speed = single_speed
 
         self.state_machine = statemachine.StateMachine(
                 owner=self,
@@ -153,7 +184,7 @@ class Enemy(MovingAgent):
         self.path = []
     
     def getMaxSpeed(self):
-        return 10
+        return self.single_speed
 
     def getMaxForce(self):
         return 100
@@ -188,6 +219,31 @@ class Enemy(MovingAgent):
                     target_node)
             self.path = [node.get_data() for node in path_of_nodes]
 
+    def update(self, timeElapsed):
+        tile = self.get_current_tile()
+        target_tile = self.target.get_current_tile()
+        x, y = tile.get_grid_position()
+        target_x, target_y = target_tile.get_grid_position()
+        if target_x == x:
+            if y < target_y:
+                direction = (0, 1)
+            else:
+                direction = (0, -1)
+            shot = Shot(world=self.world,
+                        direction=direction,
+                        tile=tile)
+            self.world.add_canvas_element(shot)
+        if target_y == y:
+            if x < target_x:
+                direction = (1, 0)
+            else:
+                direction = (-1, 0)
+            shot = Shot(world=self.world,
+                        direction=direction,
+                        tile=tile)
+            self.world.add_canvas_element(shot)
+
+        super(Enemy, self).update(self)
 
 class Player(MovingAgent):
     zope.interface.implements(

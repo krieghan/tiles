@@ -23,7 +23,7 @@ class TilesWorld(object):
                  width_tiles,
                  tile_height,
                  tile_width):
-        self.canvasElements = []
+        self.canvasElements = set()
         self.height_tiles = height_tiles
         self.width_tiles = width_tiles
         self.tile_height = tile_height
@@ -54,7 +54,7 @@ class TilesWorld(object):
                 for adjacent_tile in adjacent_tiles:
                     tile_node.add_two_way_connected_node(adjacent_tile.get_graph_node())
 
-                self.canvasElements.append(tile)
+                self.canvasElements.add(tile)
                 self.tiles[w].append(tile)
 
         self.player = agents.Player(
@@ -84,10 +84,16 @@ class TilesWorld(object):
 
         enemy.getSteeringController().activate('pursue', self.player)
                 
-        self.canvasElements.append(self.player)
-        self.canvasElements.append(obstacle)
-        self.canvasElements.append(enemy)
+        self.canvasElements.add(self.player)
+        self.canvasElements.add(obstacle)
+        self.canvasElements.add(enemy)
         self.mode = None
+
+    def add_canvas_element(self, element):
+        self.canvasElements.add(element)
+
+    def remove_canvas_element(self, element):
+        self.canvasElements.remove(element)
 
     def start(self):
         GLUT.glutIgnoreKeyRepeat(True)
@@ -115,7 +121,7 @@ class TilesWorld(object):
             self.current_time = currentTime
         timeElapsed = (currentTime - self.current_time)
         self.current_time = currentTime
-        for canvasElement in self.getAllCanvasElements():
+        for canvasElement in list(self.getAllCanvasElements()):
             if not canvasElement.getActive():
                 continue
             canvasElement.update(timeElapsed=timeElapsed)

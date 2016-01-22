@@ -35,12 +35,14 @@ def render_enemy(agent):
     GL.glRotatef(direction, 0, 0, 1)
     GL.glColor3f(*color)
     draw_circle(agent.getLength() / 2.0, 20)
-    GL.glColor3f(1, 1, 1)
 
+    '''
+    GL.glColor3f(1, 1, 1)
     GL.glBegin(GL.GL_LINES)
     GL.glVertex2f(0, 0, 0)
     GL.glVertex2f(agent.getLength() * 2.0, 0, 0)
     GL.glEnd()
+    '''
     GL.glPopMatrix()
 
 def render_obstacle(obstacle):
@@ -57,6 +59,22 @@ def render_obstacle(obstacle):
     GL.glVertex2f((half_width - 1), half_height)
     GL.glVertex2f((half_width - 1), (-half_height + 1))
     GL.glVertex2f(-half_width, (-half_height + 1))
+
+    GL.glEnd()
+    GL.glPopMatrix()
+
+def render_shot(shot):
+    x, y = shot.getPosition()
+    direction = shot.getDirectionDegrees()
+    color = (1, 1, 1)
+    GL.glPushMatrix()
+    GL.glTranslate(x, y, 0)
+    GL.glRotatef(direction, 0, 0, 1)
+    GL.glColor3f(*color)
+    GL.glBegin(GL.GL_LINES)
+
+    GL.glVertex2f(x, y)
+    GL.glVertex2f(x + 1000, y)
 
     GL.glEnd()
     GL.glPopMatrix()
