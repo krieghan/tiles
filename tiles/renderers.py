@@ -11,25 +11,36 @@ def draw_circle(radius, number_of_triangles):
         GL.glVertex2f(
             radius * math.cos(i * twice_pi / number_of_triangles),
             radius * math.sin(i * twice_pi / number_of_triangles))
-
     GL.glEnd()
+
 
 def render_player(agent):
     x, y = agent.getPosition()
+    direction = agent.getDirectionDegrees()
     color = (0, 0, 1)
     GL.glPushMatrix()
     GL.glTranslate(x, y, 0)
+    GL.glRotatef(direction, 0, 0, 1)
     GL.glColor3f(*color)
     draw_circle(agent.getLength() / 2.0, 20)
+
     GL.glPopMatrix()
 
 def render_enemy(agent):
     x, y = agent.getPosition()
+    direction = agent.getDirectionDegrees()
     color = (1, 0, 0)
     GL.glPushMatrix()
     GL.glTranslate(x, y, 0)
+    GL.glRotatef(direction, 0, 0, 1)
     GL.glColor3f(*color)
     draw_circle(agent.getLength() / 2.0, 20)
+    GL.glColor3f(1, 1, 1)
+
+    GL.glBegin(GL.GL_LINES)
+    GL.glVertex2f(0, 0, 0)
+    GL.glVertex2f(agent.getLength() * 2.0, 0, 0)
+    GL.glEnd()
     GL.glPopMatrix()
 
 def render_obstacle(obstacle):
