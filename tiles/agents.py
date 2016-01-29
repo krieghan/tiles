@@ -19,6 +19,7 @@ class MovingAgent(object):
                  renderer,
                  height=1,
                  width=1,
+                 position=None,
                  tile=None):
         self.renderer = renderer
         self.height = height * tile.height
@@ -28,11 +29,14 @@ class MovingAgent(object):
         self.world = world
         self.tile = tile
         self.tile.add_member(self)
-        if tile:
-            self.position = tile.getPosition()
+        if position is None:
+            if tile:
+                self.position = tile.getPosition()
+            else:
+                raise Exception('No position for agent')
         else:
-            return None
-
+            self.position = position
+                
         self.state_machines = []
 
         self.velocity = (0, 0)
@@ -130,15 +134,17 @@ class Shot(MovingAgent):
                  world,
                  direction,
                  renderer=renderers.render_shot,
-                 height=0,
-                 width=0,
+                 height=.2,
+                 width=.2,
                  single_speed=10,
+                 position=None,
                  tile=None):
         super(Shot, self).__init__(
                 world=world,
                 renderer=renderer,
                 height=height,
                 width=width,
+                position=position,
                 tile=tile)
         self.single_speed = single_speed
         self.velocity = vector.setMagnitude(
@@ -182,6 +188,9 @@ class Enemy(MovingAgent):
         self.state_machines.append(self.state_machine)
         self.target = None
         self.path = []
+        self.shotCooldown = 1000
+        self.timeSinceLastShot = self.shotCooldown
+        
     
     def getMaxSpeed(self):
         return self.single_speed
@@ -220,28 +229,40 @@ class Enemy(MovingAgent):
             self.path = [node.get_data() for node in path_of_nodes]
 
     def update(self, timeElapsed):
-        tile = self.get_current_tile()
-        target_tile = self.target.get_current_tile()
-        x, y = tile.get_grid_position()
-        target_x, target_y = target_tile.get_grid_position()
-        if target_x == x:
-            if y < target_y:
-                direction = (0, 1)
-            else:
-                direction = (0, -1)
-            shot = Shot(world=self.world,
-                        direction=direction,
-                        tile=tile)
-            self.world.add_canvas_element(shot)
-        if target_y == y:
-            if x < target_x:
-                direction = (1, 0)
-            else:
-                direction = (-1, 0)
-            shot = Shot(world=self.world,
-                        direction=direction,
-                        tile=tile)
-            self.world.add_canvas_element(shot)
+        self.timeSinceLastShot += timeElapsed
+        if self.timeSinceLastShot >= self.shotCooldown:
+            self.timeSinceLastShot = 0
+            tile = self.get_current_tile()
+            target_tile = self.target.get_current_tile()
+            x, y = tile.get_grid_position()
+            target_x, target_y = target_tile.get_grid_position()
+            if target_x == x or target_y == y:
+                if target_x == x:
+                    if y < target_y:
+                        direction = (0, 1)
+                    else:
+                        direction = (0, -1)
+                    agent_to_origination_point = vector.setMagnitude(
+                            direction,
+                            self.height * .5)
+                if target_y == y:
+                    if x < target_x:
+                        direction = (1, 0)
+                    else:
+                        direction = (-1, 0)
+                    agent_to_origination_point = vector.setMagnitude(
+                            direction,
+                            self.width * .5)
+
+                origination_point = calculate.addPointAndVector(
+                        self.position,
+                        agent_to_origination_point)
+
+                shot = Shot(world=self.world,
+                            direction=direction,
+                            tile=tile,
+                            position=origination_point)
+                self.world.add_canvas_element(shot)
 
         super(Enemy, self).update(self)
 

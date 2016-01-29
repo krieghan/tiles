@@ -66,15 +66,18 @@ def render_obstacle(obstacle):
 def render_shot(shot):
     x, y = shot.getPosition()
     direction = shot.getDirectionDegrees()
+    half_width = .5 * shot.getWidth()
+    half_height = .5 * shot.getLength()
     color = (1, 1, 1)
     GL.glPushMatrix()
     GL.glTranslate(x, y, 0)
-    GL.glRotatef(direction, 0, 0, 1)
     GL.glColor3f(*color)
-    GL.glBegin(GL.GL_LINES)
+    GL.glBegin(GL.GL_POLYGON)
 
-    GL.glVertex2f(x, y)
-    GL.glVertex2f(x + 1000, y)
+    GL.glVertex2f(-half_width, half_height)
+    GL.glVertex2f((half_width - 1), half_height)
+    GL.glVertex2f((half_width - 1), (-half_height + 1))
+    GL.glVertex2f(-half_width, (-half_height + 1))
 
     GL.glEnd()
     GL.glPopMatrix()
