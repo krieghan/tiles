@@ -8,6 +8,7 @@ import zope.interface.verify
 from game_common import (
         graph,
         interfaces)
+from game_common.twodee.geometry import intersects
 import tiles
 from tiles import (
         agents, 
@@ -80,8 +81,6 @@ class TilesWorld(object):
 
         enemy.set_target(self.player)
 
-        
-
         enemy.getSteeringController().activate('pursue', self.player)
                 
         self.canvasElements.add(self.player)
@@ -126,6 +125,24 @@ class TilesWorld(object):
                 continue
             canvasElement.update(timeElapsed=timeElapsed)
 
+        cleared_of_collisions = set([])
+
+        for canvasElement in list(self.getAllCanvasElements()):
+            for otherElement in list(self.getAllCanvasElements()):
+                if canvasElement is otherElement:
+                    continue
+                
+                # Don't double-count collisions when canvasElement
+                # is reconsidered as otherElement
+                if otherElement in cleared_of_collisions:
+                    continue
+
+                if intersect.collidesWith(canvasElement, otherElement):
+                    canvasElement.handleCollision(otherElement)
+                    otherElement.handleCollision(canvasElement)
+
+            cleared_of_collisions.add(canvasElement)
+
     def render(self):
         for element in self.getAllCanvasElements():
             element.draw()
@@ -135,3 +152,4 @@ class TilesWorld(object):
 
 zope.interface.verify.verifyClass(interfaces.IWorld, TilesWorld)
 
+            

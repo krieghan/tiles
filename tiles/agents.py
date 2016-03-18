@@ -55,6 +55,11 @@ class MovingAgent(object):
     def getWidth(self):
         return self.width
 
+    def getBoundaries(self):
+        return [(intersect.Circle,
+                 (0,
+                  self.getLength()))]
+
     def draw(self):
         if self.renderer:
             self.renderer(self)
@@ -85,6 +90,8 @@ class MovingAgent(object):
         self.position = calculate.addPointAndVector(
                 self.position,
                 self.velocity)
+
+
 
     #Observable
     def getObservers(self):
@@ -150,7 +157,7 @@ class Shot(MovingAgent):
         self.velocity = vector.setMagnitude(
                 direction,
                 self.single_speed)
-
+        
     def is_obstructive(self):
         return False
 

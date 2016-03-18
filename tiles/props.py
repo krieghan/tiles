@@ -41,12 +41,19 @@ class Obstacle(object):
     def getActive(self):
         return True
 
-    #TileInhabitant
+    # TileInhabitant
     def get_current_tile(self):
         return self.tile
 
     def is_obstructive(self):
         return True
+
+    # Collideable
+    def getBoundaries(self):
+        pass
+
+    def handleCollision(self, otherElement):
+        pass
 
 zope.interface.verify.verifyClass(interfaces.Renderable, Obstacle)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Obstacle)
