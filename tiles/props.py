@@ -50,7 +50,11 @@ class Obstacle(object):
 
     # Collideable
     def getBoundaries(self):
-        pass
+        half_height = self.height / 2.0
+        half_width = self.width / 2.0
+        return {intersect.Rectangle : (
+                    (-half_width, -half_height),
+                    (half_width, half_height))}
 
     def handleCollision(self, otherElement):
         pass

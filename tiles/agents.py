@@ -56,9 +56,7 @@ class MovingAgent(object):
         return self.width
 
     def getBoundaries(self):
-        return [(intersect.Circle,
-                 (0,
-                  self.getLength()))]
+        return {intersect.Circle: ((0, 0), self.getLength() / 2.0)}
 
     def draw(self):
         if self.renderer:
