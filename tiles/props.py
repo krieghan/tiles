@@ -2,6 +2,7 @@ import zope.interface
 import zope.interface.verify
 
 from game_common import interfaces
+from game_common.twodee.geometry import intersect
 import tiles
 
 class Obstacle(object):
@@ -54,10 +55,15 @@ class Obstacle(object):
         half_width = self.width / 2.0
         return {intersect.Rectangle : (
                     (-half_width, -half_height),
-                    (half_width, half_height))}
+                    (half_width, -half_height),
+                    (half_width, half_height),
+                    (-half_width, half_height))}
 
     def handleCollision(self, otherElement):
         pass
+
+    def getDirection(self):
+        return 0
 
 zope.interface.verify.verifyClass(interfaces.Renderable, Obstacle)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Obstacle)

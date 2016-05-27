@@ -105,6 +105,15 @@ def get_tile_factory(height_in, width_in):
                     tiles.append(tile)
             return tiles
 
+        def getBoundaries(self):
+            return {}
+
+        def handleCollision(self, other):
+            pass
+
+        def getDirection(self):
+            return 0
+
         def is_obstructed(self):
             for member in self.members.union(self.aspiring_members):
                 if member.is_obstructive():

@@ -8,7 +8,7 @@ import zope.interface.verify
 from game_common import (
         graph,
         interfaces)
-from game_common.twodee.geometry import intersects
+from game_common.twodee.geometry import intersect
 import tiles
 from tiles import (
         agents, 

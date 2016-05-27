@@ -64,12 +64,12 @@ def render_obstacle(obstacle):
     GL.glPopMatrix()
 
 def render_shot(shot):
-    x, y = agent.getPosition()
-    direction = agent.getDirectionDegrees()
+    x, y = shot.getPosition()
+    direction = shot.getDirectionDegrees()
     color = (1, 0, 0)
     GL.glPushMatrix()
     GL.glTranslate(x, y, 0)
     GL.glRotatef(direction, 0, 0, 1)
     GL.glColor3f(*color)
-    draw_circle(agent.getLength() / 2.0, 20)
+    draw_circle(shot.getLength() / 2.0, 20)
     GL.glPopMatrix()

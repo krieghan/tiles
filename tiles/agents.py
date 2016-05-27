@@ -7,6 +7,7 @@ from game_common import (
         graph)
 from game_common.twodee.geometry import (
         calculate,
+        intersect,
         vector)
 from game_common.twodee.steering import steeringcontroller
 
@@ -162,6 +163,11 @@ class Shot(MovingAgent):
     def update(self, timeElapsed):
         super(Shot, self).update(timeElapsed)
 
+    def handleCollision(self, otherElement):
+        import pdb; pdb.set_trace()
+        self.world.remove_canvas_element(self)
+
+
 class Enemy(MovingAgent):
     zope.interface.implements(
             [interfaces.Steerable,
@@ -197,6 +203,9 @@ class Enemy(MovingAgent):
         self.timeSinceLastShot = self.shotCooldown
         
     
+    def handleCollision(self, otherElement):
+        pass
+
     def getMaxSpeed(self):
         return self.single_speed
 
@@ -299,6 +308,9 @@ class Player(MovingAgent):
                 name='tileMovement')
         self.state_machines.append(self.state_machine)
 
+    def handleCollision(self, otherElement):
+        pass
+
 zope.interface.verify.verifyClass(interfaces.Moveable, Player)
 zope.interface.verify.verifyClass(interfaces.Observable, Player)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
@@ -306,3 +318,7 @@ zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
 zope.interface.verify.verifyClass(interfaces.Steerable, Enemy)
 zope.interface.verify.verifyClass(interfaces.Observable, Enemy)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Enemy)
+
+zope.interface.verify.verifyClass(interfaces.Moveable, Shot)
+zope.interface.verify.verifyClass(interfaces.Observable, Shot)
+zope.interface.verify.verifyClass(tiles.TileInhabitant, Shot)
