@@ -139,6 +139,7 @@ class Shot(MovingAgent):
     def __init__(self,
                  world,
                  direction,
+                 owner,
                  renderer=renderers.render_shot,
                  height=.2,
                  width=.2,
@@ -152,6 +153,7 @@ class Shot(MovingAgent):
                 width=width,
                 position=position,
                 tile=tile)
+        self.owner = owner
         self.single_speed = single_speed
         self.velocity = vector.setMagnitude(
                 direction,
@@ -164,7 +166,8 @@ class Shot(MovingAgent):
         super(Shot, self).update(timeElapsed)
 
     def handleCollision(self, otherElement):
-        import pdb; pdb.set_trace()
+        if otherElement is self.owner:
+            return
         self.world.remove_canvas_element(self)
 
 
@@ -275,6 +278,7 @@ class Enemy(MovingAgent):
                 shot = Shot(world=self.world,
                             direction=direction,
                             tile=tile,
+                            owner=self,
                             position=origination_point)
                 self.world.add_canvas_element(shot)
 
