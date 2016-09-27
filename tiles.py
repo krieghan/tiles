@@ -9,7 +9,9 @@ def run():
                 width_tiles=10,
                 tile_height=100,
                 tile_width=100)
-    tiles_canvas = canvas.Canvas(world=world)
+    tiles_canvas = canvas.Canvas(
+            world=world,
+            title='Tiles')
     tiles_canvas.start()
 
 if __name__ == "__main__":
