@@ -134,6 +134,7 @@ class Shot(MovingAgent):
     zope.interface.implements(
             [interfaces.Moveable,
              interfaces.Observable,
+             interfaces.Collideable,
              tiles.TileAgent])
 
     def __init__(self,
@@ -175,6 +176,7 @@ class Enemy(MovingAgent):
     zope.interface.implements(
             [interfaces.Steerable,
              interfaces.Observable,
+             interfaces.Collideable,
              tiles.TileAgent])
 
     def __init__(self,
@@ -288,6 +290,7 @@ class Player(MovingAgent):
     zope.interface.implements(
             [interfaces.Moveable,
              interfaces.Observable,
+             interfaces.Collideable,
              tiles.TileAgent])
 
     def __init__(self, 
@@ -317,12 +320,15 @@ class Player(MovingAgent):
 
 zope.interface.verify.verifyClass(interfaces.Moveable, Player)
 zope.interface.verify.verifyClass(interfaces.Observable, Player)
+zope.interface.verify.verifyClass(interfaces.Collideable, Player)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
 
 zope.interface.verify.verifyClass(interfaces.Steerable, Enemy)
 zope.interface.verify.verifyClass(interfaces.Observable, Enemy)
+zope.interface.verify.verifyClass(interfaces.Collideable, Enemy)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Enemy)
 
 zope.interface.verify.verifyClass(interfaces.Moveable, Shot)
 zope.interface.verify.verifyClass(interfaces.Observable, Shot)
+zope.interface.verify.verifyClass(interfaces.Collideable, Shot)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Shot)

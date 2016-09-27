@@ -8,6 +8,7 @@ import tiles
 class Obstacle(object):
     zope.interface.implements(
             [tiles.TileInhabitant,
+             interfaces.Collideable,
              interfaces.Renderable])
 
     def __init__(self,
@@ -66,5 +67,6 @@ class Obstacle(object):
         return 0
 
 zope.interface.verify.verifyClass(interfaces.Renderable, Obstacle)
+zope.interface.verify.verifyClass(interfaces.Collideable, Obstacle)
 zope.interface.verify.verifyClass(tiles.TileInhabitant, Obstacle)
 

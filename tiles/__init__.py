@@ -12,6 +12,7 @@ def get_tile_factory(height_in, width_in):
     class Tile(object):
         zope.interface.implements([
             interfaces.Renderable,
+            interfaces.Collideable,
             graph.NodeData])
 
         height = height_in
@@ -131,6 +132,7 @@ def get_tile_factory(height_in, width_in):
 
 
     zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
+    zope.interface.verify.verifyClass(interfaces.Collideable, Tile)
     zope.interface.verify.verifyClass(graph.NodeData, Tile)
     return Tile
 
