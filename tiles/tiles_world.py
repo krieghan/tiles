@@ -83,12 +83,27 @@ class TilesWorld(object):
 
         enemy.getSteeringController().activate('pursue', self.player)
                 
-        self.canvasElements.add(self.player)
-        self.canvasElements.add(obstacle)
-        self.canvasElements.add(enemy)
+        self.add_canvas_element(self.player)
+        self.add_canvas_element(obstacle)
+        self.add_canvas_element(enemy)
         self.mode = None
 
+    def getHeightWidth(self):
+        return (self.height, self.width)
+
+    def getMaxLeftRightBottomTop(self):
+        return (self.max_left,
+                self.max_right,
+                self.max_bottom,
+                self.max_top)
+
     def add_canvas_element(self, element):
+        zope.interface.verify.verifyObject(
+                interfaces.Collideable,
+                element)
+        zope.interface.verify.verifyObject(
+                interfaces.Renderable,
+                element)
         self.canvasElements.add(element)
 
     def remove_canvas_element(self, element):
@@ -151,5 +166,3 @@ class TilesWorld(object):
         return self.canvasElements
 
 zope.interface.verify.verifyClass(interfaces.IWorld, TilesWorld)
-
-            
