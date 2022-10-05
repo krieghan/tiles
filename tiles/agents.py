@@ -1,6 +1,3 @@
-import zope.interface
-import zope.interface.verify
-
 from game_common import (
         interfaces,
         statemachine,
@@ -10,6 +7,7 @@ from game_common.twodee.geometry import (
         intersect,
         vector)
 from game_common.twodee.steering import steeringcontroller
+from zope.interface import (implementer, verify)
 
 import tiles
 from tiles import states, renderers
@@ -130,13 +128,12 @@ class MovingAgent(object):
     def setSpeed(self, speed):
         self.velocity = vector.setMagnitude(self.velocity, speed)
 
+@implementer(
+    interfaces.Moveable,
+    interfaces.Observable,
+    interfaces.Collideable,
+    tiles.TileAgent)
 class Shot(MovingAgent):
-    zope.interface.implements(
-            [interfaces.Moveable,
-             interfaces.Observable,
-             interfaces.Collideable,
-             tiles.TileAgent])
-
     def __init__(self,
                  world,
                  direction,
@@ -172,13 +169,12 @@ class Shot(MovingAgent):
         self.world.remove_canvas_element(self)
 
 
+@implementer(
+    interfaces.Steerable,
+    interfaces.Observable,
+    interfaces.Collideable,
+    tiles.TileAgent)
 class Enemy(MovingAgent):
-    zope.interface.implements(
-            [interfaces.Steerable,
-             interfaces.Observable,
-             interfaces.Collideable,
-             tiles.TileAgent])
-
     def __init__(self,
                  world,
                  renderer,
@@ -286,13 +282,12 @@ class Enemy(MovingAgent):
 
         super(Enemy, self).update(self)
 
+@implementer(
+    interfaces.Moveable,
+    interfaces.Observable,
+    interfaces.Collideable,
+    tiles.TileAgent)
 class Player(MovingAgent):
-    zope.interface.implements(
-            [interfaces.Moveable,
-             interfaces.Observable,
-             interfaces.Collideable,
-             tiles.TileAgent])
-
     def __init__(self, 
                  world,
                  renderer,
@@ -318,17 +313,17 @@ class Player(MovingAgent):
     def handleCollision(self, otherElement):
         pass
 
-zope.interface.verify.verifyClass(interfaces.Moveable, Player)
-zope.interface.verify.verifyClass(interfaces.Observable, Player)
-zope.interface.verify.verifyClass(interfaces.Collideable, Player)
-zope.interface.verify.verifyClass(tiles.TileInhabitant, Player)
+verify.verifyClass(interfaces.Moveable, Player)
+verify.verifyClass(interfaces.Observable, Player)
+verify.verifyClass(interfaces.Collideable, Player)
+verify.verifyClass(tiles.TileInhabitant, Player)
 
-zope.interface.verify.verifyClass(interfaces.Steerable, Enemy)
-zope.interface.verify.verifyClass(interfaces.Observable, Enemy)
-zope.interface.verify.verifyClass(interfaces.Collideable, Enemy)
-zope.interface.verify.verifyClass(tiles.TileInhabitant, Enemy)
+verify.verifyClass(interfaces.Steerable, Enemy)
+verify.verifyClass(interfaces.Observable, Enemy)
+verify.verifyClass(interfaces.Collideable, Enemy)
+verify.verifyClass(tiles.TileInhabitant, Enemy)
 
-zope.interface.verify.verifyClass(interfaces.Moveable, Shot)
-zope.interface.verify.verifyClass(interfaces.Observable, Shot)
-zope.interface.verify.verifyClass(interfaces.Collideable, Shot)
-zope.interface.verify.verifyClass(tiles.TileInhabitant, Shot)
+verify.verifyClass(interfaces.Moveable, Shot)
+verify.verifyClass(interfaces.Observable, Shot)
+verify.verifyClass(interfaces.Collideable, Shot)
+verify.verifyClass(tiles.TileInhabitant, Shot)

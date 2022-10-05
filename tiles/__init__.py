@@ -1,20 +1,20 @@
 from OpenGL import GL
-import zope.interface
-import zope.interface.verify
-
 from game_common import (
         interfaces,
         graph)
+import zope.interface
+from zope.interface import (
+    implementer,
+    verify)
 
 from tiles import constants
 
 def get_tile_factory(height_in, width_in):
+    @implementer(
+        interfaces.Renderable,
+        interfaces.Collideable,
+        graph.NodeData)
     class Tile(object):
-        zope.interface.implements([
-            interfaces.Renderable,
-            interfaces.Collideable,
-            graph.NodeData])
-
         height = height_in
         width = width_in
 
@@ -131,9 +131,9 @@ def get_tile_factory(height_in, width_in):
             return abs(my_x - target_x) + abs(my_y - target_y)
 
 
-    zope.interface.verify.verifyClass(interfaces.Renderable, Tile)
-    zope.interface.verify.verifyClass(interfaces.Collideable, Tile)
-    zope.interface.verify.verifyClass(graph.NodeData, Tile)
+    verify.verifyClass(interfaces.Renderable, Tile)
+    verify.verifyClass(interfaces.Collideable, Tile)
+    verify.verifyClass(graph.NodeData, Tile)
     return Tile
 
 class TileInhabitant(zope.interface.Interface):

@@ -1,5 +1,3 @@
-import optparse
-
 from tiles import tiles_world
 from game_common import canvas
 

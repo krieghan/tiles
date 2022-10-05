@@ -1,17 +1,14 @@
-import zope.interface
-import zope.interface.verify
-
 from game_common import (
         constants,
         statemachine)
-
 from game_common.twodee.geometry import (
         vector,
         calculate)
+from zope.interface import implementer, verify
 
+
+@implementer(statemachine.IState)
 class AgentOnTile(object):
-    zope.interface.implements(statemachine.IState)
-
     @classmethod
     def enter(cls, owner):
         owner.setSpeed(0)
@@ -24,11 +21,11 @@ class AgentOnTile(object):
     def exit(cls, owner):
         pass
 
-zope.interface.verify.verifyClass(statemachine.IState, AgentOnTile)
+verify.verifyClass(statemachine.IState, AgentOnTile)
 
+
+@implementer(statemachine.IState)
 class AgentBetweenTiles(object):
-    zope.interface.implements(statemachine.IState)
-
     @classmethod
     def enter(cls, owner):
         owner.update_path()
@@ -83,11 +80,11 @@ class AgentBetweenTiles(object):
     def exit(cls, owner):
         owner.change_tile(owner.next_tile)
 
-zope.interface.verify.verifyClass(statemachine.IState, AgentBetweenTiles)
+verify.verifyClass(statemachine.IState, AgentBetweenTiles)
 
+
+@implementer(statemachine.IState)
 class OnTile(object):
-    zope.interface.implements(statemachine.IState)
-
     @classmethod
     def enter(cls, owner):
         owner.setSpeed(0)
@@ -108,11 +105,10 @@ class OnTile(object):
             if next_tile.is_obstructed():
                 raise statemachine.StateChangeFailed()
 
-zope.interface.verify.verifyClass(statemachine.IState, OnTile)
+verify.verifyClass(statemachine.IState, OnTile)
 
+@implementer(statemachine.IState)
 class BetweenTiles(object):
-    zope.interface.implements(statemachine.IState)
-
     @classmethod
     def enter(cls, owner):
         if owner.world.mode:
@@ -145,5 +141,5 @@ class BetweenTiles(object):
     def exit(cls, owner):
         owner.change_tile(owner.next_tile)
 
-zope.interface.verify.verifyClass(statemachine.IState, BetweenTiles)
+verify.verifyClass(statemachine.IState, BetweenTiles)
 

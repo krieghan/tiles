@@ -1,24 +1,23 @@
 import sys
 import time
 
-from OpenGL import GL, GLUT
-import zope.interface 
-import zope.interface.verify
-
 from game_common import (
         graph,
         interfaces)
 from game_common.twodee.geometry import intersect
+from OpenGL import GL, GLUT
+from zope.interface import (
+    implementer,
+    verify)
+
 import tiles
 from tiles import (
         agents, 
         renderers, 
         props)
 
+@implementer(interfaces.IWorld)
 class TilesWorld(object):
-
-    zope.interface.implements(interfaces.IWorld)
-
     def __init__(self,
                  height_tiles,
                  width_tiles,
@@ -98,10 +97,10 @@ class TilesWorld(object):
                 self.max_top)
 
     def add_canvas_element(self, element):
-        zope.interface.verify.verifyObject(
+        verify.verifyObject(
                 interfaces.Collideable,
                 element)
-        zope.interface.verify.verifyObject(
+        verify.verifyObject(
                 interfaces.Renderable,
                 element)
         self.canvasElements.add(element)
@@ -165,4 +164,4 @@ class TilesWorld(object):
     def getAllCanvasElements(self):
         return self.canvasElements
 
-zope.interface.verify.verifyClass(interfaces.IWorld, TilesWorld)
+verify.verifyClass(interfaces.IWorld, TilesWorld)

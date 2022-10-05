@@ -1,16 +1,16 @@
-import zope.interface
-import zope.interface.verify
-
 from game_common import interfaces
 from game_common.twodee.geometry import intersect
+from zope.interface import (
+    implementer,
+    verify)
+
 import tiles
 
+@implementer(
+    tiles.TileInhabitant,
+    interfaces.Collideable,
+    interfaces.Renderable)
 class Obstacle(object):
-    zope.interface.implements(
-            [tiles.TileInhabitant,
-             interfaces.Collideable,
-             interfaces.Renderable])
-
     def __init__(self,
                  world,
                  renderer,
@@ -66,7 +66,7 @@ class Obstacle(object):
     def getDirection(self):
         return 0
 
-zope.interface.verify.verifyClass(interfaces.Renderable, Obstacle)
-zope.interface.verify.verifyClass(interfaces.Collideable, Obstacle)
-zope.interface.verify.verifyClass(tiles.TileInhabitant, Obstacle)
+verify.verifyClass(interfaces.Renderable, Obstacle)
+verify.verifyClass(interfaces.Collideable, Obstacle)
+verify.verifyClass(tiles.TileInhabitant, Obstacle)
 
