@@ -129,11 +129,11 @@ class TilesWorld(object):
                 self.mode = None
 
     def update(self,
-               currentTime):
+               current_time):
         if not self.current_time:
-            self.current_time = currentTime
-        timeElapsed = (currentTime - self.current_time)
-        self.current_time = currentTime
+            self.current_time = current_time
+        timeElapsed = (current_time - self.current_time)
+        self.current_time = current_time
         for canvasElement in list(self.getAllCanvasElements()):
             if not canvasElement.getActive():
                 continue

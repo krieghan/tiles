@@ -15,7 +15,7 @@ class AgentOnTile(object):
 
     @classmethod
     def execute(cls, owner):
-        owner.state_machine.changeState(AgentBetweenTiles)
+        owner.state_machine.change_state(AgentBetweenTiles)
 
     @classmethod
     def exit(cls, owner):
@@ -74,7 +74,7 @@ class AgentBetweenTiles(object):
 
         if arrived:
             owner.position = (tile_x, tile_y)
-            owner.state_machine.changeState(AgentOnTile)
+            owner.state_machine.change_state(AgentOnTile)
 
     @classmethod
     def exit(cls, owner):
@@ -92,7 +92,7 @@ class OnTile(object):
     @classmethod
     def execute(cls, owner):
         if owner.world.mode:
-            owner.state_machine.changeState(BetweenTiles)
+            owner.state_machine.change_state(BetweenTiles)
 
     @classmethod
     def exit(cls, owner):
@@ -135,7 +135,7 @@ class BetweenTiles(object):
 
         if arrived:
             owner.position = (tile_x, tile_y)
-            owner.state_machine.changeState(OnTile)
+            owner.state_machine.change_state(OnTile)
 
     @classmethod
     def exit(cls, owner):

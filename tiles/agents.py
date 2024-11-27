@@ -194,8 +194,8 @@ class Enemy(MovingAgent):
 
         self.state_machine = statemachine.StateMachine(
                 owner=self,
-                currentState=states.AgentOnTile,
-                globalState=None,
+                current_state=states.AgentOnTile,
+                global_state=None,
                 name='tileMovement')
         self.state_machines.append(self.state_machine)
         self.target = None
@@ -305,8 +305,8 @@ class Player(MovingAgent):
 
         self.state_machine = statemachine.StateMachine(
                 owner=self,
-                currentState=states.OnTile,
-                globalState=None,
+                current_state=states.OnTile,
+                global_state=None,
                 name='tileMovement')
         self.state_machines.append(self.state_machine)
 
